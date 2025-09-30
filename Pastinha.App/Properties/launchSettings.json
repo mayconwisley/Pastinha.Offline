@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Pastinha.App": {
+      "commandName": "Project",
+      "commandLineArgs": "config"
+    }
+  }
+}

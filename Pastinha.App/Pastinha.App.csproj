@@ -1,0 +1,81 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Title>Pastinha.exe</Title>
+    <PackageIcon>Pastinha.png</PackageIcon>
+    <ApplicationIcon>PastinhaIco.ico</ApplicationIcon>
+    <RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
+    <RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
+    <EnableNETAnalyzers>False</EnableNETAnalyzers>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0</AssemblyVersion>
+    <FileVersion>1.1.0</FileVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="PastinhaIco.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pastinha.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" Version="4.14.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.14.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.14.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <PackageReference Include="ReportViewerCore.WinForms" Version="15.1.26" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Pastinha.Base\Pastinha.Base.csproj" />
+    <ProjectReference Include="..\Pastinha.Model\Pastinha.Model.csproj" />
+    <ProjectReference Include="..\Pastinha.Utility\Pastinha.Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Reports\DataQrCodeProcess.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataQrCodeProcess.xsd</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Migration.mig">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Reports\DataQrCodeProcess.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataQrCodeProcess.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="Reports\ReportProcessQrCode.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

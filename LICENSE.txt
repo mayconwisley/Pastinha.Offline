@@ -1,0 +1,46 @@
+TERMO DE USO DO SOFTWARE
+1. Aceitação dos Termos
+Ao instalar e utilizar este software, você concorda com os termos e condições aqui estabelecidos. Se você não concordar com estes termos, não instale ou utilize o software.
+
+2. Funcionalidades do Software
+O software é projetado para processar arquivos, incluindo, mas não se limitando a:
+
+Converter páginas de documentos PDF em imagens PNG.
+
+Redimensionar e processar imagens (PNG, JPG, JPEG, BMP).
+
+Detectar e processar códigos QR em imagens.
+
+Organizar arquivos processados em diretórios específicos.
+
+3. Responsabilidades do Usuário
+Você concorda em:
+
+Utilizar o software apenas para fins legais e de acordo com estes termos.
+
+Fornecer arquivos e diretórios válidos para processamento.
+
+Manter backups dos arquivos originais, pois o software pode mover, renomear ou excluir arquivos durante o processamento.
+
+Não utilizar o software para processar conteúdo ilegal, protegido por direitos autorais ou que viole direitos de terceiros.
+
+4. Limitações de Uso
+O software é fornecido "no estado em que se encontra", sem garantias de qualquer tipo, expressas ou implícitas, incluindo, mas não se limitando a, garantias de desempenho, confiabilidade ou adequação a um propósito específico. Em nenhuma circunstância os desenvolvedores ou distribuidores do software serão responsáveis por danos diretos, indiretos, incidentais ou consequenciais decorrentes do uso ou incapacidade de uso do software.
+
+5. Privacidade e Dados
+O software não coleta, armazena ou transmite dados pessoais dos usuários. No entanto, ele processa arquivos fornecidos pelo usuário, que são mantidos localmente no computador do usuário. O usuário é responsável por garantir que os arquivos processados não contenham informações sensíveis ou pessoais, a menos que seja seguro fazê-lo.
+
+6. Propriedade Intelectual
+Todo o código-fonte, bibliotecas e recursos utilizados no software são de propriedade dos respectivos desenvolvedores e estão sujeitos às licenças aplicáveis. O usuário não tem permissão para redistribuir, modificar ou engenharia reversa do software sem autorização expressa.
+
+7. Modificações e Atualizações
+Os desenvolvedores reservam-se o direito de modificar, atualizar ou descontinuar o software a qualquer momento, sem aviso prévio. O usuário é responsável por manter o software atualizado para garantir o funcionamento adequado.
+
+8. Rescisão
+Este Termo de Uso é efetivo até ser rescindido por você ou pelos desenvolvedores. Você pode rescindir o uso do software a qualquer momento, desinstalando-o do seu computador. Os desenvolvedores podem rescindir seu acesso ao software se você violar qualquer um destes termos.
+
+9. Lei Aplicável
+Este Termo de Uso será regido e interpretado de acordo com as leis do país ou estado onde o software é distribuído. Qualquer disputa relacionada a este Termo de Uso será resolvida nos tribunais competentes dessa jurisdição.
+
+10. Concordância
+Ao clicar em "Aceito" ou ao instalar e utilizar o software, você confirma que leu, entendeu e concorda com estes Termos de Uso. Se você não concordar com estes termos, não instale ou utilize o software.

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataQrCodeProcess" targetNamespace="http://tempuri.org/DataQrCodeProcess.xsd" xmlns:mstns="http://tempuri.org/DataQrCodeProcess.xsd" xmlns="http://tempuri.org/DataQrCodeProcess.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataQrCodeProcess" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_UserDSName="DataQrCodeProcess" msprop:Generator_DataSetName="DataQrCodeProcess">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="CountDataFiles" msprop:Generator_RowEvHandlerName="CountDataFilesRowChangeEventHandler" msprop:Generator_RowDeletedName="CountDataFilesRowDeleted" msprop:Generator_RowDeletingName="CountDataFilesRowDeleting" msprop:Generator_RowEvArgName="CountDataFilesRowChangeEvent" msprop:Generator_TablePropName="CountDataFiles" msprop:Generator_RowChangedName="CountDataFilesRowChanged" msprop:Generator_RowChangingName="CountDataFilesRowChanging" msprop:Generator_TableClassName="CountDataFilesDataTable" msprop:Generator_RowClassName="CountDataFilesRow" msprop:Generator_TableVarName="tableCountDataFiles" msprop:Generator_UserTableName="CountDataFiles">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_UserColumnName="Id" type="xs:string" minOccurs="0" />
+              <xs:element name="CountPDF" msprop:Generator_ColumnPropNameInRow="CountPDF" msprop:Generator_ColumnPropNameInTable="CountPDFColumn" msprop:Generator_ColumnVarNameInTable="columnCountPDF" msprop:Generator_UserColumnName="CountPDF" type="xs:string" minOccurs="0" />
+              <xs:element name="CountImage" msprop:Generator_ColumnPropNameInRow="CountImage" msprop:Generator_ColumnPropNameInTable="CountImageColumn" msprop:Generator_ColumnVarNameInTable="columnCountImage" msprop:Generator_UserColumnName="CountImage" type="xs:string" minOccurs="0" />
+              <xs:element name="CountOtherFormat" msprop:Generator_ColumnPropNameInRow="CountOtherFormat" msprop:Generator_ColumnPropNameInTable="CountOtherFormatColumn" msprop:Generator_ColumnVarNameInTable="columnCountOtherFormat" msprop:Generator_UserColumnName="CountOtherFormat" type="xs:string" minOccurs="0" />
+              <xs:element name="CountSendPlatform" msprop:Generator_ColumnPropNameInRow="CountSendPlatform" msprop:Generator_ColumnPropNameInTable="CountSendPlatformColumn" msprop:Generator_ColumnVarNameInTable="columnCountSendPlatform" msprop:Generator_UserColumnName="CountSendPlatform" type="xs:string" minOccurs="0" />
+              <xs:element name="DateProcess" msprop:Generator_ColumnPropNameInRow="DateProcess" msprop:Generator_ColumnPropNameInTable="DateProcessColumn" msprop:Generator_ColumnVarNameInTable="columnDateProcess" msprop:Generator_UserColumnName="DateProcess" type="xs:string" minOccurs="0" />
+              <xs:element name="NoSendPlatform" msprop:Generator_ColumnPropNameInRow="NoSendPlatform" msprop:Generator_ColumnPropNameInTable="NoSendPlatformColumn" msprop:Generator_ColumnVarNameInTable="columnNoSendPlatform" msprop:Generator_UserColumnName="NoSendPlatform" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,21 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="Pastinha.App/Pastinha.App.csproj" Id="4f28960f-1bf6-fc9d-b42a-d0d5b48a4008">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="Pastinha.Base/Pastinha.Base.csproj" Id="5552e9a6-bed0-13f4-7db2-a5d299f853ca">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="Pastinha.Model/Pastinha.Model.csproj" Id="12d00b3c-60c1-0377-93cd-d6774c3ab0ed">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="Pastinha.Service/Pastinha.Service.csproj" Id="c1e3c188-7965-9f8f-a6d9-c9b1a298825c">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="Pastinha.Utility/Pastinha.Utility.csproj" Id="2257cd7c-fea8-a890-5430-f455061f3c81">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+</Solution>
