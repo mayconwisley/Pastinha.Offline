@@ -4,5 +4,5 @@ namespace Pastinha.Service.Service.Process.Interface;
 
 public interface IProcessEnhanceImageForQrCode
 {
-    Task<Bitmap> EnhanceImageForQrCode(Bitmap originalImage);
+	Task<List<Bitmap>> EnhanceImageForQrCode(Bitmap originalImage);
 }

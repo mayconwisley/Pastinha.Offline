@@ -7,19 +7,51 @@ namespace Pastinha.Service.Service.Process;
 
 public class ProcessEnhanceImageForQrCode : IProcessEnhanceImageForQrCode
 {
-	public async Task<Bitmap> EnhanceImageForQrCode(Bitmap originalImage)
+
+	private readonly float[] _contrastLevels = { 1.2f, 1.5f, 1.8f, 2.0f };
+	private readonly int[] _thresholdLevels = { 80, 100, 120, 140, 160 };
+	private readonly RotateFlipType[] _rotations =
 	{
+		RotateFlipType.RotateNoneFlipNone,
+		RotateFlipType.Rotate90FlipNone,
+		RotateFlipType.Rotate180FlipNone,
+		RotateFlipType.Rotate270FlipNone
+	};
+
+	public async Task<List<Bitmap>> EnhanceImageForQrCode(Bitmap originalImage)
+	{
+		var results = new List<Bitmap>();
+
+		// Converte primeiro para grayscale
 		using Bitmap grayImage = ConvertToGrayscale(originalImage);
-		using Bitmap contrastImage = AdjustContrast(grayImage, 2.0f);
-		Bitmap binaryImage = ApplyAdaptiveBinarization(contrastImage);
-		return await Task.FromResult(binaryImage);
+
+		foreach (var contrast in _contrastLevels)
+		{
+			using Bitmap contrastImage = AdjustContrast(grayImage, contrast);
+
+			foreach (var threshold in _thresholdLevels)
+			{
+				using Bitmap binImage = ApplyAdaptiveBinarization(contrastImage, threshold);
+
+				foreach (var rotation in _rotations)
+				{
+					Bitmap rotated = (Bitmap)binImage.Clone();
+					rotated.RotateFlip(rotation);
+					results.Add(rotated);
+				}
+			}
+		}
+
+		return await Task.FromResult(results);
 	}
 
 	private Bitmap ConvertToGrayscale(Bitmap original)
 	{
 		Bitmap grayImage = new(original.Width, original.Height, PixelFormat.Format24bppRgb);
-		BitmapData originalData = original.LockBits(new Rectangle(0, 0, original.Width, original.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-		BitmapData grayData = grayImage.LockBits(new Rectangle(0, 0, grayImage.Width, grayImage.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+		BitmapData originalData = original.LockBits(new Rectangle(0, 0, original.Width, original.Height),
+			ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+		BitmapData grayData = grayImage.LockBits(new Rectangle(0, 0, grayImage.Width, grayImage.Height),
+			ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
 		int bytes = Math.Abs(originalData.Stride) * original.Height;
 		byte[] pixelBuffer = new byte[bytes];
@@ -46,8 +78,10 @@ public class ProcessEnhanceImageForQrCode : IProcessEnhanceImageForQrCode
 	private Bitmap AdjustContrast(Bitmap image, float contrast)
 	{
 		Bitmap adjustedImage = new(image.Width, image.Height, PixelFormat.Format24bppRgb);
-		BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-		BitmapData adjustedData = adjustedImage.LockBits(new Rectangle(0, 0, adjustedImage.Width, adjustedImage.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+		BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+			ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+		BitmapData adjustedData = adjustedImage.LockBits(new Rectangle(0, 0, adjustedImage.Width, adjustedImage.Height),
+			ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
 		int bytes = Math.Abs(imageData.Stride) * image.Height;
 		byte[] pixelBuffer = new byte[bytes];
@@ -82,18 +116,18 @@ public class ProcessEnhanceImageForQrCode : IProcessEnhanceImageForQrCode
 		return adjustedImage;
 	}
 
-	private Bitmap ApplyAdaptiveBinarization(Bitmap image)
+	private Bitmap ApplyAdaptiveBinarization(Bitmap image, int threshold)
 	{
 		Bitmap binaryImage = new(image.Width, image.Height, PixelFormat.Format24bppRgb);
-		BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-		BitmapData binaryData = binaryImage.LockBits(new Rectangle(0, 0, binaryImage.Width, binaryImage.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+		BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+			ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+		BitmapData binaryData = binaryImage.LockBits(new Rectangle(0, 0, binaryImage.Width, binaryImage.Height),
+			ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
 		int bytes = Math.Abs(imageData.Stride) * image.Height;
 		byte[] pixelBuffer = new byte[bytes];
 		Marshal.Copy(imageData.Scan0, pixelBuffer, 0, bytes);
 		image.UnlockBits(imageData);
-
-		int threshold = 120;
 
 		var options = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
 

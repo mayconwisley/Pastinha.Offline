@@ -12,9 +12,9 @@ public class CreateFolder(IServiceScopeFactory _serviceScopeFactory, CreateLog _
 	{
 		if (!Directory.Exists(pathOutput))
 		{
-			_createLog.Log($"[INFO] Criando diretório: {pathOutput}");
+			_createLog.Log($"[INFO] Tentando criar diretório: {pathOutput}");
 			Directory.CreateDirectory(pathOutput);
-			_createLog.Log($"[SUCESSO] Criado diretório: {pathOutput}");
+			_createLog.Log($"[SUCESSO] Diretório criado: {pathOutput}");
 		}
 		else
 		{

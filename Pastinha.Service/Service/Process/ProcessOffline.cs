@@ -10,7 +10,7 @@ public class ProcessOffline(ICreateFolder _createFolder, IMoveFolder _moveFolder
 	{
 		var stopwatch = Stopwatch.StartNew();
 		_createLog.Log($"[INFO][OFFLINE] Inicio do processamento - {DateTime.Now:HH:mm:ss}.");
-		_createLog.Log($"[INFO] Processando diretório offline {pathOffline}");
+		_createLog.Log($"[INFO] Processando diretório offline: {pathOffline}");
 		string[] folders = Directory.GetDirectories(pathOutput, "*.*", SearchOption.TopDirectoryOnly);
 		string newPathOffilineActive;
 		if (folders.Length == 0)
@@ -21,17 +21,17 @@ public class ProcessOffline(ICreateFolder _createFolder, IMoveFolder _moveFolder
 
 		foreach (string folder in folders)
 		{
-			_createLog.Log($"[INFO] Processando diretório {folder}");
+			_createLog.Log($"[INFO] Processando diretório de saida: {folder}");
 			DirectoryInfo directoryInfo = new(folder);
 
 			var newPathOffline = Path.Combine(pathOffline, directoryInfo.Name);
-			_createLog.Log($"[INFO] Montando diretório {newPathOffline}");
+			_createLog.Log($"[INFO] Montando diretório offline: {newPathOffline}");
 
 			string[] folderOutputs = Directory.GetDirectories(folder, "*.*", SearchOption.TopDirectoryOnly);
 
 			foreach (var folderOutput in folderOutputs)
 			{
-				_createLog.Log($"[INFO] Processando diretório {folderOutput}");
+				_createLog.Log($"[INFO] Processando diretório de saida {folderOutput}");
 
 				DirectoryInfo directoryInfo1 = new(folderOutput);
 
@@ -50,8 +50,8 @@ public class ProcessOffline(ICreateFolder _createFolder, IMoveFolder _moveFolder
 
 					if (files1.Length == 0)
 					{
-						_createLog.Log($"[INFO] Nenhum arquivos no diretório {folder}");
-						_createLog.Log($"[INFO] Excluido diretório já processado {folder}");
+						_createLog.Log($"[INFO] Nenhum arquivos no diretório: {folder}");
+						_createLog.Log($"[INFO] Excluido diretório já processado: {folder}");
 						Directory.Delete(folder, true);
 						return;
 					}
@@ -96,8 +96,9 @@ public class ProcessOffline(ICreateFolder _createFolder, IMoveFolder _moveFolder
 			}
 			_createLog.Log($"[INFO] Excluido diretório já processado {folder}");
 			Directory.Delete(folder, true);
-			_createLog.Log($"[INFO][OFFLINE] Término do processamento - {DateTime.Now:HH:mm:ss}, Tempo total de processamento: {stopwatch.Elapsed}");
+
 		}
+		_createLog.Log($"[INFO][OFFLINE] Término do processamento - {DateTime.Now:HH:mm:ss}, Tempo total de processamento: {stopwatch.Elapsed}");
 		return;
 	}
 }

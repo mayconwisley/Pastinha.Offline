@@ -19,7 +19,7 @@ public class MoveFolder(CreateLog _createLog) : IMoveFolder
 
 		if (!Directory.Exists(pathOutput))
 		{
-			_createLog.Log($"[INFO] Movendo arquivo para o diretório {pathOutput}");
+			_createLog.Log($"[INFO] Movendo arquivo para o diretório: {pathOutput}");
 			Directory.Move(pathInput, pathOutput);
 			return true;
 		}

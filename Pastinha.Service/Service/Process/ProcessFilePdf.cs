@@ -5,116 +5,122 @@ using Pastinha.Service.Service.Process.Interface;
 using Pastinha.Utility.Utility;
 using PdfiumViewer;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace Pastinha.Service.Service.Process;
 
 public class ProcessFilePdf(IProcessQrCodeImage _processQrCodeImage, IRenameFile _renameFile,
-    ICreateFolder _createFolder, ICreateFolderLoose _createFolderLoose, ICreateUpdateEmployee _createUpdateEmployee,
-    CreateLog _createLog) : IProcessFilePdf
+	ICreateFolder _createFolder, ICreateUpdateEmployee _createUpdateEmployee,
+	CreateLog _createLog) : IProcessFilePdf
 {
-    public async Task Process(string file, string pathOutput, string pathError, List<(int dpi, int width, int height)> resizeAttempts)
-    {
-        const int MAX_PARALLEL_MEMORY_MB = 1024;
-        double estimatedPerPageMb = EstimateMemoryPerPageMb(1380, 1920, 4); // 10.6MB base -> uso conservador
+	public async Task Process(string file, string pathOutput, string pathError)
+	{
+		const int MAX_PARALLEL_MEMORY_MB = 1024;
+		const int DPI = 300;
+		const int WIDTH = 820; //1380
+		const int HEIGHT = 1080; //1920
 
-        int maxParallelByMemory = Math.Max(1, (int)(MAX_PARALLEL_MEMORY_MB / Math.Max(1.0, estimatedPerPageMb)));
+		var resizeAttempts = GenerateResizeAttempts.Generate(DPI, WIDTH, HEIGHT);
 
-        //Equilibrado para a maioria dos cenários e evita sobrecarregar o servidor.
-        int maxParallelism = Math.Max(1, Environment.ProcessorCount / 2);
-        int maxParallel = Math.Min(maxParallelByMemory, maxParallelism);
-        _createLog.Log($"[INFO] MaxParallel calculado. CPU-base: {maxParallelism}, Memória-base: {maxParallelByMemory}. Usando {maxParallel} workers.");
+		double estimatedPerPageMb = EstimateMemoryPerPageMb(WIDTH, HEIGHT, 4);
 
-        var stopwatch = Stopwatch.StartNew();
+		int maxParallelByMemory = Math.Max(1, (int)(MAX_PARALLEL_MEMORY_MB / Math.Max(1.0, estimatedPerPageMb)));
 
-        using var pdfReader = PdfDocument.Load(file);
-        _createLog.Log($"[INFO][PDF] Iniciando processamento do arquivo PDF");
+		//Equilibrado para a maioria dos cenários e evita sobrecarregar o servidor.
+		int maxParallelism = Math.Max(1, Environment.ProcessorCount / 2);
+		int maxParallel = Math.Min(maxParallelByMemory, maxParallelism);
+		_createLog.Log($"[INFO] MaxParallel calculado: {maxParallel} (CPU: {maxParallelism}, Memória: {maxParallelByMemory}).");
+		_createLog.Log($"[INFO] Memória estimada por página: {estimatedPerPageMb:F2}MB");
 
-        Guid guid = Guid.NewGuid();
-        string nameFile = Path.GetFileName(file);
-        int pageCount = pdfReader.PageCount;
+		var stopwatch = Stopwatch.StartNew();
 
-        await Parallel.ForEachAsync(Enumerable.Range(0, pageCount), new ParallelOptions { MaxDegreeOfParallelism = maxParallel }, async (currentPage, cancellationToken) =>
-        {
-            _createLog.Log($"[DEBUG] Threads ativas: {maxParallel}");
-            _createLog.Log($"[INFO] Início do processamento da página: {currentPage}");
+		using var pdfReader = PdfDocument.Load(file);
+		_createLog.Log($"[INFO][PDF] Iniciando processamento do arquivo PDF");
 
-            string pathOutputImage = Path.Combine(pathOutput, $"{guid:N}-{currentPage}.png");
-            _createLog.Log($"[INFO] Nome temporário do arquivo para conversão PNG: {pathOutputImage}");
+		Guid guid = Guid.NewGuid();
+		string nameFile = Path.GetFileName(file);
+		int pageCount = pdfReader.PageCount;
 
-            try
-            {
-                int dpi = 300;
-                int width = 1380;
-                int height = 1920;
+		await Parallel.ForEachAsync(Enumerable.Range(0, pageCount),
+			new ParallelOptions { MaxDegreeOfParallelism = maxParallel },
+			async (currentPage, cancellationToken) =>
+		{
+			var threadInfo = $"Thread[{Thread.CurrentThread.ManagedThreadId}]";
+			_createLog.Log($"[DEBUG][{threadInfo}] Threads ativas: {maxParallel}");
+			_createLog.Log($"[INFO][{threadInfo}] Início do processamento da página: {currentPage + 1}");
 
-                using var img = pdfReader.Render(currentPage, width, height, dpi, dpi, true);
+			string pathOutputImage = Path.Combine(pathOutput, $"{guid:N}-{currentPage + 1}.png");
+			_createLog.Log($"[INFO][{threadInfo}] Nome temporário do arquivo para conversão PNG: {pathOutputImage}");
 
-                ImageCodecInfo? pngEncoder = ImageCodecInfo.GetImageEncoders()
-                                                           .FirstOrDefault(codec => codec.FormatID == ImageFormat.Png.Guid);
+			Bitmap bitmap;
+			try
+			{
+				using var img = pdfReader.Render(currentPage, WIDTH, HEIGHT, DPI, DPI, true);
 
-                using var encoderParams = new EncoderParameters(1);
-                encoderParams.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
+				bitmap = new(img);
 
-                img.Save(pathOutputImage, pngEncoder!, encoderParams);
+				ImageCodecInfo? pngEncoder = ImageCodecInfo.GetImageEncoders()
+														   .FirstOrDefault(codec => codec.FormatID == ImageFormat.Png.Guid);
 
-                _createLog.Log($"[SUCESSO] Conversão realizada com sucesso da página {currentPage}");
-            }
-            catch (Exception ex)
-            {
-                _createLog.Log($"[ERRO] Na conversão da página {currentPage} para .PNG: {ex.Message}");
-                return;
-            }
+				using var encoderParams = new EncoderParameters(1);
+				encoderParams.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
 
-            try
-            {
-                var dataQrCode = await _processQrCodeImage.ProcessMultQrCodeMemory(pathOutputImage, pathError, resizeAttempts);
+				img.Save(pathOutputImage, pngEncoder!, encoderParams);
 
-                if (dataQrCode is not null)
-                {
-                    // await CreateEmployee(dataQrCode); // Descomente se quiser ativar
+				_createLog.Log($"[SUCESSO][{threadInfo}] Conversão realizada com sucesso da página {currentPage + 1}");
+			}
+			catch (Exception ex)
+			{
+				_createLog.Log($"[ERRO][{threadInfo}] Na conversão da página {currentPage + 1} para .PNG: {ex.Message}");
+				return;
+			}
 
-                    string newPathOutput = await _createFolder.Create(dataQrCode, pathOutput);
-                    _renameFile.Rename(dataQrCode, pathOutputImage, newPathOutput);
-                }
-                else
-                {
-                    _createLog.Log($"[AVISO] QRCode não encontrado na página: {currentPage}");
-                    _createLog.Log($"[INFO] Verificando nome do arquivo: {pathOutputImage}");
-                    _createFolderLoose.Create(file, pathOutputImage, pathOutput);
-                }
-            }
-            catch (Exception ex)
-            {
-                _createLog.Log($"[ERRO] Processamento do QRCode na página {currentPage}: {ex.Message}");
-            }
+			try
+			{
+				var dataQrCode = await _processQrCodeImage.ProcessSingleQrCodeMemory_1(bitmap, pathError, resizeAttempts);
 
-            _createLog.Log($"[INFO] Término do processamento da página: {currentPage}");
-        });
+				if (dataQrCode is not null)
+				{
+					// await CreateEmployee(dataQrCode); // Descomente se quiser ativar
 
-        stopwatch.Stop();
-        _createLog.Log($"[INFO][PDF] Término do processamento arquivo PDF, Tempo total de processamento: {stopwatch.Elapsed}");
-    }
-    private static double EstimateMemoryPerPageMb(int width, int height, int bytesPerPixel)
-    {
-        // width * height * bytesPerPixel -> bytes
-        long pixels = (long)width * (long)height; // evita overflow
-        long bytes = pixels * bytesPerPixel;
-        double mb = bytes / (1024.0 * 1024.0);
-        // adiciona overhead conservador (encoder, temporários) — multiplicador x3
-        return Math.Max(1.0, mb * 3.0);
-    }
-    private async Task CreateEmployee(DataQrCode dataQrCode)
-    {
-        var employee = dataQrCode.ToQrCodeDataFromEmploye();
+					string newPathOutput = await _createFolder.Create(dataQrCode, pathOutput);
+					_renameFile.Rename(dataQrCode, pathOutputImage, newPathOutput);
+				}
+				else
+				{
+					_createLog.Log($"[AVISO][{threadInfo}] QRCode não encontrado na página: {currentPage + 1}");
+				}
+			}
+			catch (Exception ex)
+			{
+				_createLog.Log($"[ERRO][{threadInfo}] Processamento do QRCode na página {currentPage + 1}: {ex.Message}");
+			}
 
-        try
-        {
-            await _createUpdateEmployee.CreateUpdadeAsync(employee!);
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
+			_createLog.Log($"[INFO][{threadInfo}] Término do processamento da página: {currentPage + 1}");
+		});
+
+		stopwatch.Stop();
+		_createLog.Log($"[INFO][PDF] Término do processamento arquivo PDF, Tempo total de processamento: {stopwatch.Elapsed}");
+	}
+	private static double EstimateMemoryPerPageMb(int width, int height, int bytesPerPixel)
+	{
+		long pixels = (long)width * (long)height;
+		long bytes = pixels * bytesPerPixel;
+		double mb = bytes / (1024.0 * 1024.0);
+		return Math.Max(1.0, mb * 2.0);
+	}
+	private async Task CreateEmployee(DataQrCode dataQrCode)
+	{
+		var employee = dataQrCode.ToQrCodeDataFromEmploye();
+
+		try
+		{
+			await _createUpdateEmployee.CreateUpdadeAsync(employee!);
+		}
+		catch (Exception)
+		{
+			throw;
+		}
+	}
 }
